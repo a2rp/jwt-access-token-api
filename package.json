@@ -1,0 +1,35 @@
+{
+    "name": "jwt-access-token-api",
+    "version": "1.0.0",
+    "description": "Minimal JWT access token issue and verification demo using Express (no refresh token flow)",
+    "main": "src/index.js",
+    "scripts": {
+        "dev": "nodemon src/index.js",
+        "start": "node src/index.js"
+    },
+    "keywords": [
+        "nodejs",
+        "express",
+        "jwt",
+        "authentication",
+        "access-token",
+        "backend",
+        "api",
+        "security",
+        "micro-project"
+    ],
+    "author": "Ashish Ranjan",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
+        "dotenv": "^17.3.1",
+        "express": "^5.2.1",
+        "jsonwebtoken": "^9.0.3"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.11"
+    },
+    "engines": {
+        "node": ">=18"
+    }
+}

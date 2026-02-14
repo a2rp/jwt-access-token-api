@@ -1,0 +1,39 @@
+@baseUrl = http://localhost:1198
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzEwNjgxNjMsImV4cCI6MTc3MTA2OTA2M30.-FFDjRgm6VEIRSXVbVDV1l7mNZ_6WqO9pvaHznP3eSA
+
+### Health
+GET {{baseUrl}}/health
+
+### Login - missing fields (should 400)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "",
+  "password": ""
+}
+
+### Login - wrong creds (should 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "wrong"
+}
+
+### Login - correct (copy accessToken from response and paste into @token above)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### Protected - /me without token (should 401)
+GET {{baseUrl}}/me
+
+### Protected - /me with token (should 200)
+GET {{baseUrl}}/me
+Authorization: Bearer {{token}}
