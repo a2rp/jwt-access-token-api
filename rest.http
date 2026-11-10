@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:1198
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzAwMSIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzEwNjgxNjMsImV4cCI6MTc3MTA2OTA2M30.-FFDjRgm6VEIRSXVbVDV1l7mNZ_6WqO9pvaHznP3eSA
+@token = paste-access-token-from-login-response-here
 
 ### Health
 GET {{baseUrl}}/health

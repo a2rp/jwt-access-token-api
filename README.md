@@ -1,6 +1,6 @@
 # JWT Access Token API
 
-A minimal backend micro project that demonstrates how to:
+A small, demo-only Express API that demonstrates how to:
 
 - Issue a JWT access token
 - Verify token using middleware
@@ -33,19 +33,27 @@ npm install
 
 ## Environment Variables
 
-Create a `.env` file in root:
+Create a `.env` file in the project root:
 
 ```env
 PORT=1198
-JWT_SECRET=super_secret_change_me
+JWT_SECRET=replace-with-generated-secret
 JWT_EXPIRES_IN=15m
 ```
+
+Replace the placeholder with a cryptographically generated secret. Generate one with:
+
+```bash
+node -p "require('node:crypto').randomBytes(32).toString('base64url')"
+```
+
+The server exits at startup if `JWT_SECRET` is missing, is still the placeholder, or contains fewer than 32 bytes.
 
 ### Variable Explanation
 
 - PORT: Server port
-- JWT_SECRET: Secret key used to sign tokens
-- JWT_EXPIRES_IN: Access token expiry duration (example: 15m, 1h)
+- JWT_SECRET: Generated secret used to sign tokens; never commit it
+- JWT_EXPIRES_IN: Positive access-token lifetime with a unit (`15m`, `1h`, `30s`, or `1d`)
 
 ---
 
@@ -91,7 +99,7 @@ jwt-access-token-api/
 ## Authentication Flow
 
 1. Client sends email + password to /auth/login
-2. Server verifies credentials
+2. Server checks the demo credentials shown below
 3. Server issues JWT access token
 4. Client sends token in Authorization header
 5. Middleware verifies token
@@ -105,6 +113,8 @@ No refresh token is used in this demo.
 
 Email: admin@example.com  
 Password: admin123
+
+These public demo credentials are hardcoded for learning. They are not a real account store or password-authentication implementation.
 
 ---
 
@@ -193,7 +203,9 @@ Successful Response:
         "email": "admin@example.com",
         "role": "admin",
         "iat": 1700000000,
-        "exp": 1700000900
+        "exp": 1700000900,
+        "iss": "jwt-access-token-api",
+        "aud": "jwt-access-token-api-client"
     }
 }
 ```
@@ -207,6 +219,8 @@ Invalid or Expired Token Response:
 }
 ```
 
+Unknown routes return a JSON `404`. Malformed JSON returns `400`, and request bodies larger than 10 KB return `413`.
+
 ---
 
 ## How Token Works
@@ -216,13 +230,14 @@ When user logs in:
 - Payload is created
 - Token is signed using JWT_SECRET
 - Expiry is added automatically
-- Client stores token
+- Client handles the token according to its own security and storage model
 - Client sends token in Authorization header
 
 Middleware verifies:
 
 - Signature is valid
-- Token not expired
+- HS256 is the expected signing algorithm
+- Issuer, audience, and expiration are valid
 - Extracts payload
 - Attaches payload to req.user
 
@@ -230,10 +245,13 @@ Middleware verifies:
 
 ## Security Notes
 
-- JWT_SECRET must never be committed
-- Always use strong secret in production
-- Use HTTPS in real deployments
-- Do not store sensitive data in token payload
+- Tokens use HS256 and the API verifies the expected algorithm, issuer, audience, and expiry.
+- `JWT_EXPIRES_IN` accepts a positive duration with an explicit seconds, minutes, hours, or days unit.
+- A signed JWT is readable by anyone holding it; the signature does not encrypt its payload. Keep sensitive data out of claims.
+- Keep `JWT_SECRET` out of source control and generate a separate secret for each issuer and audience.
+- This demo has hardcoded credentials and no login rate limiting, real user store, token revocation, or refresh flow. Do not deploy it as an authentication service without replacing those parts.
+- Use HTTPS for deployed services.
+- JSON request bodies are limited to 10 KB.
 
 ---
 
